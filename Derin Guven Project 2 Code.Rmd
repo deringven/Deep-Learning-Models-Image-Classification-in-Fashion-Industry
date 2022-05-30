@@ -1,0 +1,208 @@
+---
+title: "Derin Guven Project Code"
+output: html_document
+---
+libraries
+```{r setup, include=FALSE}
+library(keras)
+library(tidyr)
+library(ggplot2)
+```
+
+data
+```{r cars}
+data <- dataset_fashion_mnist()
+
+c(train_img, train_lab) %<-% data$train
+c(test_img, test_lab) %<-% data$test
+```
+
+
+MODEL 1 
+linear model with 2 layers with 128 and 10 units with 1e-4 learning rate. 
+validation split: 0.2
+batch_size: 128
+5- 30 epoch
+```{r pressure, echo=FALSE}
+model1 <- keras_model_sequential()
+model1 %>%
+  layer_flatten(input_shape = c(28, 28)) %>%
+  layer_dense(units = 128, activation = 'relu') %>%
+  layer_dense(units = 10, activation = 'softmax')
+
+model1 %>% compile(
+  optimizer = optimizer_rmsprop(lr = 1e-4), 
+#Cross entropy is a loss function,  Categorical refers to the possibility of having more than #two classes  Sparse refers to using a single integer from zero to the number of classes minus #one .
+  loss = 'sparse_categorical_crossentropy',
+  metrics = c('accuracy')
+)
+#history one is trying to tune the model better
+history <- model1 %>% fit(train_img, train_lab, epochs = 5)
+score <- model1 %>% evaluate(test_img, test_lab)
+
+history #validation accuarcy
+
+#this value was used as a test score
+score #test accuracy
+
+history1 <- model1 %>% fit(
+  train_img, train_lab, 
+  epochs = 30, batch_size = 128, 
+  validation_split = 0.2
+)
+plot(history1)
+```
+
+MODEL 2
+linear model with 2 layers with 128 and 10 units with 1e-4 learning rate. 
+validation split: 0.2
+batch_size: 500
+5- 30 epoch
+```{r}
+model2 <- keras_model_sequential()
+model2 %>%
+  layer_flatten(input_shape = c(28, 28)) %>%
+  layer_dense(units = 128, activation = 'relu') %>%
+  layer_dense(units = 10, activation = 'softmax')
+
+model2 %>% compile(
+  optimizer = optimizer_rmsprop(lr = 1e-4), 
+  loss = 'sparse_categorical_crossentropy',
+  metrics = c('accuracy')
+)
+#history one is trying to tune the model better
+history <- model2 %>% fit(train_img, train_lab, epochs = 5)
+score <- model2 %>% evaluate(test_img, test_lab)
+
+history1 <- model2 %>% fit(
+  train_img, train_lab, 
+  epochs = 30, batch_size = 500, 
+  validation_split = 0.2
+)
+plot(history1)
+
+```
+
+MODEL 3
+Linear model with 3 layers with 256-64-10 units. Validation split is 0.0001
+lr: 1e-4
+5-30 epoch
+validation_split = 0.0001
+batch_size = 128
+```{r}
+model3 <- keras_model_sequential()
+model3 %>%
+  layer_flatten(input_shape = c(28, 28)) %>%
+  layer_dense(units = 256, activation = 'relu') %>%
+  layer_dense(units = 64, activation = 'relu') %>%
+  layer_dense(units = 10, activation = 'softmax')
+
+model3 %>% compile(
+  optimizer = optimizer_rmsprop(lr = 1e-4), 
+  loss = 'sparse_categorical_crossentropy',
+  metrics = c('accuracy')
+)
+history <- model3 %>% fit(train_img, train_lab, epochs = 5)
+score <- model3 %>% evaluate(test_img, test_lab)
+
+
+history1 <- model3 %>% fit(
+  train_img, train_lab, 
+  epochs = 30, batch_size = 128, 
+  validation_split = 0.0001
+)
+plot(history1)
+
+```
+
+MODEL 4
+Linear model with 3 layers with 256-64-10 units. Validation split is 0.6
+lr: 1e-4
+5-30 epoch
+batch_size = 600
+```{r}
+model4 <- keras_model_sequential()
+model4 %>%
+  layer_flatten(input_shape = c(28, 28)) %>%
+  layer_dense(units = 256, activation = 'relu') %>%
+  layer_dense(units = 64, activation = 'relu') %>%
+  layer_dense(units = 10, activation = 'softmax')
+
+model4 %>% compile(
+  optimizer = optimizer_rmsprop(lr = 1e-4), 
+  loss = 'sparse_categorical_crossentropy',
+  metrics = c('accuracy')
+)
+history <- model4 %>% fit(train_img, train_lab, epochs = 5)
+score <- model4 %>% evaluate(test_img, test_lab)
+
+
+history1 <- model4 %>% fit(
+  train_img, train_lab, 
+  epochs = 30, batch_size = 600, 
+  validation_split = 0.6
+)
+plot(history1)
+```
+
+MODEL 5
+Linear model with 3 layers with 256-64-10 units. Validation split is 0.6
+lr: 0.001
+10-20 epoch
+batch_size = 600
+
+```{r}
+model5 <- keras_model_sequential()
+model5 %>%
+  layer_flatten(input_shape = c(28, 28)) %>%
+  layer_dense(units = 256, activation = 'relu') %>%
+  layer_dense(units = 64, activation = 'relu') %>%
+  layer_dense(units = 10, activation = 'softmax')
+
+model5 %>% compile(
+  optimizer = optimizer_rmsprop(lr = 0.001), 
+  loss = 'sparse_categorical_crossentropy',
+  metrics = c('accuracy')
+)
+history <- model5 %>% fit(train_img, train_lab, epochs = 10)
+score <- model5 %>% evaluate(test_img, test_lab)
+
+
+history1 <- model5 %>% fit(
+  train_img, train_lab, 
+  epochs = 20, batch_size = 600, 
+  validation_split = 0.6
+)
+plot(history1)
+```
+
+MODEL 6
+Linear model with 3 layers with 800-60-10 units. Validation split is 0.6
+epoch 10-20
+batch_size: 600
+lr: 0.001
+
+```{r}
+model6 <- keras_model_sequential()
+model6 %>%
+  layer_flatten(input_shape = c(28, 28)) %>%
+  layer_dense(units = 800, activation = 'relu') %>%
+  layer_dense(units = 60, activation = 'relu') %>%
+  layer_dense(units = 10, activation = 'softmax')
+
+model6 %>% compile(
+  optimizer = optimizer_rmsprop(lr = 0.001), 
+  loss = 'sparse_categorical_crossentropy',
+  metrics = c('accuracy')
+)
+history <- model6 %>% fit(train_img, train_lab, epochs = 10)
+score <- model6 %>% evaluate(test_img, test_lab)
+
+history1 <- model6 %>% fit(
+  train_img, train_lab, 
+  epochs = 20, batch_size = 600, 
+  validation_split = 0.6
+)
+plot(history1)
+```
+
